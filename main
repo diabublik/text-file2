@@ -1,0 +1,36 @@
+#include <stdio.h>
+
+int main() {
+	FILE* file1, * file2;
+	char name[20], temp[10];
+	float num, armean = 0, quantity = 0;
+	puts("Input the name of available file:");
+	gets_s(name);
+	if (!(file1 = fopen(name, "r"))) puts("The file with this name isn`t available");
+	else {
+		printf("---------------------%s---------------------\n", name);
+		while (fscanf(file1, "%f", &num) != EOF) {
+			printf("%8.2f", num);
+			armean += num;
+			quantity++;
+		}
+		armean /= quantity;
+		printf("\n\nThe arithmetical mean of these nums: %10.4f\n\n", armean);
+		rewind(file1);
+		file2 = fopen("temp.txt", "w+");
+		while (fscanf(file1, "%f", &num) != EOF) {
+			if (num > armean) {
+				fprintf(file2, "%f ", num);
+			}
+		}
+		rewind(file2);
+		printf("---------------------%s---------------------\n", name);
+		while (fscanf(file2, "%f", &num) != EOF) {
+			printf("%8.2f", num);
+		}
+		puts("");
+		fcloseall();
+		remove(name);
+		rename("temp.txt", name);
+	}
+}
